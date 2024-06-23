@@ -23,6 +23,17 @@ fn read_file_to_vector(path: &str) -> io::Result<Vec<String>> {
     Ok(lines)
 }
 
+fn write_vec_to_file(data: &Vec<Vec<String>>, file_path: &str) -> io::Result<()> {
+    let mut file = File::create(file_path)?;
+
+    for row in data {
+        let line = row.join(",") + "\n";
+        file.write_all(line.as_bytes())?;
+    }
+
+    Ok(())
+}
+
 fn input() -> Result<String, Box<dyn Error>> {
     print!(": ");
     io::stdout().flush().unwrap();
@@ -114,6 +125,8 @@ fn main() {
 
                 //if active table isnt the same as the one mentioned in the operation
                 if active_table_name != tokens[1] {
+                    let path = format!("data/{}.data", active_table_name);
+                    write_vec_to_file(&active_table, &path).unwrap();
                     //clear old data
                     active_table.clear();
                     active_table_header.clear();
